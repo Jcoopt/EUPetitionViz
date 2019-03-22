@@ -1,0 +1,66 @@
+<!doctype html>
+
+  <head>
+    <meta charset="utf-8" />
+    <title>Simple EU thing </title>
+    <!-- Chart JS dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
+  </head>
+  <h1>At {{ value[0] }} the number of signatures was : {{ value[1] }}!</h1>
+
+<h1></h1>
+    <!-- canvas element for the chart -->
+    <div><canvas id="ChartCanvas" width="600" height="400"></canvas></div>
+    <p id="caption">This site checks the official signature number about once every five minutes. The number does change
+    there about once every five minutes as well but might not when there are server issues with the petition site (as has been the case)
+    or when fewer people are signing it (such as in the dead of night). This graph displays only changes in the data. The
+    full data can be found <a href="/full_chart">here</a> </p>
+
+    <script>
+      // Global parameters:
+      // do not resize the chart canvas when its container does (keep at 600x400px)
+      Chart.defaults.global.responsive = false;
+      window.onload = function () {
+
+
+      // define the chart data
+      var chartData = {
+        labels : [{% for item in labels %}
+                   "{{item}}",
+                  {% endfor %}],
+        datasets : [{
+            label: '{{ legend }}',
+            fill: true,
+            lineTension: 0.1,
+            backgroundColor: "rgba(0,51,153,0.9)",
+            borderColor: "rgba(255,204,0,1)",
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: "rgba(255,204,0,1)",
+            pointBackgroundColor: "#fff",
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: "rgba(255,204,0,1)",
+            pointHoverBorderColor: "rgba(220,220,220,1)",
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data : [{% for item in values %}
+                      {{item}},
+                    {% endfor %}],
+            spanGaps: false
+        }]
+      }
+
+      // get chart canvas
+      var ctx = document.getElementById("ChartCanvas").getContext("2d");
+
+      // create the chart using the chart canvas
+      var myChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+      });
+      }
+    </script>
